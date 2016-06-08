@@ -2,11 +2,13 @@
 var Grid = React.createClass({
 	render: function() {
 
+		var self = this;
+
 		var rows = [];
 		for (var i = 1; i < 12; i++){rows.push(i)};
 
 		var createCells = function (cell) {
-				return (<td>{cell}</td>);
+				return (<td key={cell} id={cell} onClick={self.props.toggle.bind(null,cell)} >{cell}</td>);
 		}
 
 		var createRows = function (row) {
@@ -14,13 +16,15 @@ var Grid = React.createClass({
 			for (var j = 1; j < 9; j++){
 				cells.push(row + '.' + j);
 			}			
-			return (<tr>{cells.map(createCells)}</tr>);
+			return (<tr key={row}>{cells.map(createCells)}</tr>);
 		};
 	
 
 		return (
 				<table>
-					{rows.map(createRows)}
+					<tbody>
+						{rows.map(createRows)}
+					</tbody>
 				</table>
 		);
 	}
@@ -36,14 +40,14 @@ var GameOfLife = React.createClass({
 			};
 		},
 
-		// toggleCellStatus: function (event) {
-			//
-		// }
+		toggle: function (cell) {
+			console.log('toggle function: ', cell);
+		},
 
 		render: function() {
 			return (
 				<div>
-					 <Grid liveCells={this.state.liveCells}/>
+					 <Grid liveCells={this.state.liveCells} toggle={this.toggle}/>
 				</div>
 			 );
 		}
