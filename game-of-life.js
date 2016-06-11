@@ -6,6 +6,16 @@ let liveCellsArrNew = [];
 let rows = 20;
 let columns = 20;
 
+let cell;
+let liveCellsArray = [];
+for (let i = 0; i < 10; i++){
+	cell = 'r' + (1 + Math.floor(rows*(Math.random()))) + 'c' + (1 + Math.floor(columns*(Math.random())));
+	liveCellsArray.push(cell);
+}
+console.log('livecellsarr', liveCellsArray);
+
+
+
 
 const neighborsFunc = (c) => {
 	var neighbors = [[c[0], c[1] - 1], [c[0], c[1] + 1],
@@ -112,10 +122,14 @@ var GameOfLife = React.createClass({
 		getInitialState: function() {
 			return {
 				liveCells: [],
-				gameIsRunning: false,
+				gameIsRunning: true,
 				generation: 0
 			};
 		},
+
+		// componentDidMount : function () {
+		// 	liveCellsArray.map(function(cell){$('#' + cell).toggleClass('alive')});
+		//  },
 
 		toggle: function (cell) {
 			var cellClass = $('#' + cell).attr('class');
@@ -134,6 +148,9 @@ var GameOfLife = React.createClass({
 		},			
 
 		start: function () {
+			if (this.state.liveCells.length === 0){ return;};
+			console.log('game of life started');
+			console.log('livecells ', this.state.liveCells);
 			var self = this;
 			newLiveCells = [];
 			liveNeighbors;
@@ -142,7 +159,6 @@ var GameOfLife = React.createClass({
 			liveCellsArrNew = [];
 			var i = 1;
 			this.setState({gameIsRunning: true});
-			console.log('start game of life');
 
 			function myLoop () {
                 setTimeout(function () {    //  call a 3s setTimeout when the loop is called
