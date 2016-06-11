@@ -71,22 +71,116 @@ var GameOfLife = React.createClass({
 			console.log('start game of life');
 			console.log('start function liveCells', self.state.liveCells);
 
-			const neighborsFunc = (c) => {
-				let neighbors = [[c[0], c[1] - 1], [c[0], c[1] + 1],
+			// const neighborsFunc = (c) => {
+			// 	var neighbors = [[c[0], c[1] - 1], [c[0], c[1] + 1],
+			// 				[c[0] - 1, c[1] - 1], [c[0] - 1, c[1]],
+			// 				[c[0] - 1, c[1] + 1], [c[0] + 1, c[1]],
+			// 				[c[0] + 1, c[1] - 1], [c[0] + 1, c[1] + 1]];
+
+			// 	console.log('neighbors before mapping', neighbors);
+							
+			// 	var effe = neighbors.map((c, index) => {
+			// 		if (c[0] === 0 && c[1] === 0){c[0] = 11; c[1] = 8; neighbors[index] = c; return;}
+			// 		if (c[0] === 1 && c[1] === 0) {c[0] = 1; c[1] = 8; neighbors[index] = c; return;};
+			// 		if (c[0] === 0 && c[1] === 1) {c[0] = 11; c[1] = 1; neighbors[index] = c; return;};
+
+			// 		// if (c[0] === 12 && c[1] === 0){c[0] = 1; c[1] = 8; neighbors[index] = c; return;}
+			// 		// if (c[0] === 0 && c[1] === 9){c[0] = 11; c[1] = 1; neighbors[index] = c; return;}
+			// 		// if (c[0] === 12 && c[1] === 9){c[0] = 1; c[1] = 1; neighbors[index] = c; return;}
+			// 		if (c[0] === 0) {c[0] = 11; neighbors[index] = c; return;};
+			// 		if (c[0] === 12) {c[0] = 1; neighbors[index] = c; return;};
+			// 		if (c[1] === 0) {c[1] = 8; neighbors[index] = c; return;};
+			// 		if (c[1] === 9) {c[1] = 1; neighbors[index] = c; return;};
+			// 	});
+
+			// 	console.log('neighbors after mapping', neighbors);
+				
+			// 	return neighbors;
+			// }
+
+
+			// const live = (c) => {
+			// 	liveNeighbors = 0
+			// 	var neighbors = neighborsFunc(c);
+							
+			// 	neighbors.map((neighbor) => {
+			// 		if (_.find(liveCellsArr, neighbor) !== undefined){
+			// 			liveNeighbors++
+			// 		} 
+			// 	});
+				
+			// 	if (liveNeighbors === 3){
+			// 		newLiveCells.push(c);
+			// 	}
+			// }
+
+			// const liveOrDie = (c) => {
+			// 	console.log('live or die', c);
+
+			// 	liveNeighbors = 0;
+			// 	var neighbors = neighborsFunc(c);
+			// 	console.log('neighbors', neighbors);
+			// 	var effe = neighbors.map((neighbor) => {
+			// 		console.log('map function');
+			// 		if (_.find(liveCellsArr, neighbor) !== undefined){
+			// 			liveNeighbors++
+			// 			console.log(liveNeighbors);
+			// 		} else {
+			// 			if (_.find(deadNeighbors, neighbor) === undefined){
+			// 			deadNeighbors.push(neighbor);
+			// 			}
+			// 		};
+			// 	});
+				
+			// 	if (liveNeighbors === 2 || liveNeighbors === 3){
+			// 		newLiveCells.push(c);
+			// 	}
+			// }
+
+			// function arrTransform (cell){
+			// 	var arrEffe = [];
+			// 	arrEffe.push(parseInt(cell.substr(1,1)));
+			// 	arrEffe.push(parseInt(cell.substr(3,1)));
+			// 	liveCellsArr.push(arrEffe);
+			// }
+
+			// function transformToRc (c){
+			// 	liveCellsArrNew.push('r' + c[0] + 'c' + c[1]);
+			// }
+
+
+			// this.state.liveCells.map(arrTransform); TODO remove
+
+
+			
+
+			function myLoop () {
+                setTimeout(function () {    //  call a 3s setTimeout when the loop is called
+
+                	const neighborsFunc = (c) => {
+                		console.log('neighborsFunc', c);
+				var neighbors = [[c[0], c[1] - 1], [c[0], c[1] + 1],
 							[c[0] - 1, c[1] - 1], [c[0] - 1, c[1]],
 							[c[0] - 1, c[1] + 1], [c[0] + 1, c[1]],
 							[c[0] + 1, c[1] - 1], [c[0] + 1, c[1] + 1]];
+
+				console.log('neighbors before mapping', neighbors);
 							
-				neighbors.map((c, index) => {
-					if (c[0] === 0 && c[1] === 0){c[0] = 11; c[1] = 8; neighbors[index] = c;}
-					if (c[0] === 12 && c[1] === 0){c[0] = 1; c[1] = 8; neighbors[index] = c;}
-					if (c[0] === 0 && c[1] === 9){c[0] = 11; c[1] = 1; neighbors[index] = c;}
-					if (c[0] === 12 && c[1] === 9){c[0] = 1; c[1] = 1; neighbors[index] = c;}
-					if (c[0] === 0) {c[0] = 11; neighbors[index] = c};
-					if (c[0] === 12) {c[0] = 1; neighbors[index] = c};
-					if (c[1] === 0) {c[1] = 8; neighbors[index] = c};
-					if (c[1] === 9) {c[1] = 1; neighbors[index] = c};
+				var effe = neighbors.map((c, index) => {
+					if (c[0] === 0 && c[1] === 0){c[0] = 11; c[1] = 8; neighbors[index] = c; return;}
+					if (c[0] === 1 && c[1] === 0) {c[0] = 1; c[1] = 8; neighbors[index] = c; return;};
+					if (c[0] === 0 && c[1] === 1) {c[0] = 11; c[1] = 1; neighbors[index] = c; return;};
+					if (c[0] === 12 && c[1] === 0){c[0] = 1; c[1] = 8; neighbors[index] = c; return;}
+
+					if (c[0] === 0 && c[1] === 9){c[0] = 11; c[1] = 1; neighbors[index] = c; return;}
+					if (c[0] === 12 && c[1] === 9){c[0] = 1; c[1] = 1; neighbors[index] = c; return;}
+					if (c[0] === 0) {c[0] = 11; neighbors[index] = c; return;};
+					if (c[0] === 12) {c[0] = 1; neighbors[index] = c; return;};
+					if (c[1] === 0) {c[1] = 8; neighbors[index] = c; return;};
+					if (c[1] === 9) {c[1] = 1; neighbors[index] = c; return;};
 				});
+
+				console.log('neighbors after mapping', neighbors);
 				
 				return neighbors;
 			}
@@ -94,7 +188,7 @@ var GameOfLife = React.createClass({
 
 			const live = (c) => {
 				liveNeighbors = 0
-				let neighbors = neighborsFunc(c);
+				var neighbors = neighborsFunc(c);
 							
 				neighbors.map((neighbor) => {
 					if (_.find(liveCellsArr, neighbor) !== undefined){
@@ -108,11 +202,12 @@ var GameOfLife = React.createClass({
 			}
 
 			const liveOrDie = (c) => {
-				console.log('live or die');
+				console.log('live or die', c);
+
 				liveNeighbors = 0;
-				let neighbors = neighborsFunc(c);
+				var neighbors = neighborsFunc(c);
 				console.log('neighbors', neighbors);
-				neighbors.map((neighbor) => {
+				var effe = neighbors.map((neighbor) => {
 					console.log('map function');
 					if (_.find(liveCellsArr, neighbor) !== undefined){
 						liveNeighbors++
@@ -131,8 +226,11 @@ var GameOfLife = React.createClass({
 
 			function arrTransform (cell){
 				var arrEffe = [];
-				arrEffe.push(parseInt(cell.substr(1,1)));
-				arrEffe.push(parseInt(cell.substr(3,1)));
+				var indexC = cell.indexOf('c');
+				var r = cell.substr(1, indexC - 1);
+				var c = cell.substr(indexC + 1);
+				arrEffe.push(parseInt(r));
+				arrEffe.push(parseInt(c));
 				liveCellsArr.push(arrEffe);
 			}
 
@@ -141,14 +239,11 @@ var GameOfLife = React.createClass({
 			}
 
 
-			// this.state.liveCells.map(arrTransform); TODO remove
-
-
 			
 
-			function myLoop () {
-                setTimeout(function () {    //  call a 3s setTimeout when the loop is called
+			// this.state.liveCells.map(a
 				    console.log('hello');          //  your code here
+				    console.log('self.state.liveCells', self.state.liveCells);
 					self.state.liveCells.map(arrTransform);
 
 				    liveCellsArr.map(liveOrDie);
@@ -179,7 +274,7 @@ var GameOfLife = React.createClass({
 			        i++;                     //  increment the counter
 					// self.state.gameIsRunning = false; TODO remove
 
-			        if (i < 100 && self.state.gameIsRunning === true) {            //  if the counter < 10, call the loop function
+			        if (i < 50 && self.state.gameIsRunning === true) {            //  if the counter < 10, call the loop function
 			          myLoop();             //  ..  again which will trigger another 
 			        }                        //  ..  setTimeout()
 		   		}, 1000);
