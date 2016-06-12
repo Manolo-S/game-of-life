@@ -13,10 +13,6 @@ for (let i = 0; i < 70; i++){
 	cell = 'r' + (1 + Math.floor(rows*(Math.random()))) + 'c' + (1 + Math.floor(columns*(Math.random())));
 	liveCellsArray.push(cell);
 }
-console.log('livecellsarr', liveCellsArray);
-
-
-
 
 const neighborsFunc = (c) => {
 	let neighbors = [[c[0], c[1] - 1], [c[0], c[1] + 1],
@@ -84,19 +80,14 @@ function transformToRc (c){
 	liveCellsArrNew.push('r' + c[0] + 'c' + c[1]);
 }
 
-
 let Grid = React.createClass({
 	render: function() {
-
 		let self = this;
-
 		let rowsArr = [];
 		for (let i = 1; i < (rows + 1); i++){rowsArr.push('r' + i)};
-
 		let createCells = function (cell) {
-				return (<td key={cell} id={cell} className='' onClick={self.props.toggle.bind(null,cell)}>{cell}</td>);
+				return (<td key={cell} id={cell} className='' onClick={self.props.toggle.bind(null,cell)}></td>);
 		}
-
 		let createRows = function (row) {
 			let cells = [];
 			for (let j = 1; j < (columns + 1); j++){
@@ -104,7 +95,6 @@ let Grid = React.createClass({
 			}			
 			return (<tr key={row}>{cells.map(createCells)}</tr>);
 		};
-	
 
 		return (
 				<table>
@@ -116,15 +106,13 @@ let Grid = React.createClass({
 	}
 });
 
-
-
 let GameOfLife = React.createClass({
 
 		getInitialState: function() {
 			return {
 				liveCells: liveCellsArray,
 				gameIsRunning: false,
-				generation: 0,
+				generation: 1,
 				initialGame: true
 			};
 		},
@@ -156,7 +144,6 @@ let GameOfLife = React.createClass({
 				this.setState({liveCells: liveCellsArray});
 				this.setState({initialGame: false});
 			}
-			console.log('game of life started');
 			let self = this;
 			newLiveCells = [];
 			liveNeighbors;
@@ -168,18 +155,13 @@ let GameOfLife = React.createClass({
 
 			function myLoop () {
                 setTimeout(function () {    
-					console.log('livecells ', self.state.liveCells);
                 	if (self.state.gameIsRunning === false){return;}
                 	let nextgen = self.state.generation + 1;
                 	self.setState({generation: nextgen});
-                	console.log('gen: ', self.state.generation);
 					self.state.liveCells.map(arrTransform);
-					console.log('liveCellsArr ', liveCellsArr);
 				    liveCellsArr.map(liveOrDie);
 					deadNeighbors.map(live);
-					console.log('newLiveCells ', newLiveCells);
 					newLiveCells.map(transformToRc);
-					console.log('liveCellsArrNew', liveCellsArrNew);
 					liveCellsArrNew.map(function(c){
 						let cellClass = $('#' + c).attr('class');
 						if (cellClass === '') {$('#' + c).toggleClass('alive')};
@@ -195,10 +177,10 @@ let GameOfLife = React.createClass({
 					newLiveCells = [];
 					liveCellsArrNew = [];
 					liveCellsArr = [];
-			        i++;                     //  increment the counter
-			        if (i < 1000 && self.state.gameIsRunning === true) {            //  if the counter < 10, call the loop function
-			          myLoop();             //  ..  again which will trigger another 
-			        }                        //  ..  setTimeout()
+			        i++;             
+			        if (i < 1000 && self.state.gameIsRunning === true) {  
+			          myLoop();            
+			        }                      
 		   		}, 1000);
 			}
 			myLoop();    
@@ -210,7 +192,7 @@ let GameOfLife = React.createClass({
 
 		reset: function () {
 			this.setState({gameIsRunning: false});
-			this.setState({generation: 0});
+			this.setState({generation: 1});
 			this.setState({liveCells: []});
 			this.state.liveCells.map((c) => {
 				$('#' + c).removeClass('alive');
@@ -222,15 +204,16 @@ let GameOfLife = React.createClass({
 				<div>
 					<p>Generation: {this.state.generation}</p>
 					<Grid liveCells={this.state.liveCells} toggle={this.toggle}/>
-					<button type="button" className="btn" onClick={this.start}>Start</button>
-	             	<button type="button" className="btn" onClick={this.pause}>Pause</button>
-	             	<button type="button" className="btn" onClick={this.reset}>Reset</button>
+					<div id='controls'>
+						<button type="button" className="btn" onClick={this.start}>Start</button>
+		             	<button type="button" className="btn" onClick={this.pause}>Pause</button>
+		             	<button type="button" className="btn" onClick={this.reset}>Reset</button>
+	             	</div>
 				</div>
 			 );
 		}
 	});
 
 ReactDOM.render( <GameOfLife />, document.getElementById('grid'));
-
 
 })();
