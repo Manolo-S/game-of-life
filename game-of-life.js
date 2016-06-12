@@ -1,3 +1,5 @@
+(function(){
+
 let newLiveCells = [];
 let liveNeighbors;
 let deadNeighbors = [];
@@ -5,10 +7,9 @@ let liveCellsArr = [];
 let liveCellsArrNew = [];
 let rows = 20;
 let columns = 20;
-
 let cell;
 let liveCellsArray = [];
-for (let i = 0; i < 10; i++){
+for (let i = 0; i < 70; i++){
 	cell = 'r' + (1 + Math.floor(rows*(Math.random()))) + 'c' + (1 + Math.floor(columns*(Math.random())));
 	liveCellsArray.push(cell);
 }
@@ -18,7 +19,7 @@ console.log('livecellsarr', liveCellsArray);
 
 
 const neighborsFunc = (c) => {
-	var neighbors = [[c[0], c[1] - 1], [c[0], c[1] + 1],
+	let neighbors = [[c[0], c[1] - 1], [c[0], c[1] + 1],
 					[c[0] - 1, c[1] - 1], [c[0] - 1, c[1]],
 					[c[0] - 1, c[1] + 1], [c[0] + 1, c[1]],
 					[c[0] + 1, c[1] - 1], [c[0] + 1, c[1] + 1]];
@@ -38,7 +39,7 @@ const neighborsFunc = (c) => {
 
 const live = (c) => {
 	liveNeighbors = 0
-	var neighbors = neighborsFunc(c);
+	let neighbors = neighborsFunc(c);
 				
 	neighbors.map((neighbor) => {
 		if (_.find(liveCellsArr, neighbor) !== undefined){
@@ -53,8 +54,8 @@ const live = (c) => {
 
 const liveOrDie = (c) => {
 	liveNeighbors = 0;
-	var neighbors = neighborsFunc(c);
-	var effe = neighbors.map((neighbor) => {
+	let neighbors = neighborsFunc(c);
+	let effe = neighbors.map((neighbor) => {
 		if (_.find(liveCellsArr, neighbor) !== undefined){
 			liveNeighbors++
 		} else {
@@ -70,10 +71,10 @@ const liveOrDie = (c) => {
 }
 
 function arrTransform (cell){
-	var arrEffe = [];
-	var indexC = cell.indexOf('c');
-	var r = cell.substr(1, indexC - 1);
-	var c = cell.substr(indexC + 1);
+	let arrEffe = [];
+	let indexC = cell.indexOf('c');
+	let r = cell.substr(1, indexC - 1);
+	let c = cell.substr(indexC + 1);
 	arrEffe.push(parseInt(r));
 	arrEffe.push(parseInt(c));
 	liveCellsArr.push(arrEffe);
@@ -84,21 +85,21 @@ function transformToRc (c){
 }
 
 
-var Grid = React.createClass({
+let Grid = React.createClass({
 	render: function() {
 
-		var self = this;
+		let self = this;
 
-		var rowsArr = [];
-		for (var i = 1; i < (rows + 1); i++){rowsArr.push('r' + i)};
+		let rowsArr = [];
+		for (let i = 1; i < (rows + 1); i++){rowsArr.push('r' + i)};
 
-		var createCells = function (cell) {
+		let createCells = function (cell) {
 				return (<td key={cell} id={cell} className='' onClick={self.props.toggle.bind(null,cell)}>{cell}</td>);
 		}
 
-		var createRows = function (row) {
-			var cells = [];
-			for (var j = 1; j < (columns + 1); j++){
+		let createRows = function (row) {
+			let cells = [];
+			for (let j = 1; j < (columns + 1); j++){
 				cells.push(row + 'c' + j);
 			}			
 			return (<tr key={row}>{cells.map(createCells)}</tr>);
@@ -117,22 +118,24 @@ var Grid = React.createClass({
 
 
 
-var GameOfLife = React.createClass({
+let GameOfLife = React.createClass({
 
 		getInitialState: function() {
 			return {
-				liveCells: [],
-				gameIsRunning: true,
-				generation: 0
+				liveCells: liveCellsArray,
+				gameIsRunning: false,
+				generation: 0,
+				initialGame: true
 			};
 		},
 
-		// componentDidMount : function () {
-		// 	liveCellsArray.map(function(cell){$('#' + cell).toggleClass('alive')});
-		//  },
+
+		componentDidMount : function () {
+			this.start();
+		},
 
 		toggle: function (cell) {
-			var cellClass = $('#' + cell).attr('class');
+			let cellClass = $('#' + cell).attr('class');
 			if (cellClass === '') {
 				$('#' + cell).toggleClass('alive');
 				let liveCellsCopy = JSON.parse(JSON.stringify(this.state.liveCells));
@@ -140,7 +143,7 @@ var GameOfLife = React.createClass({
 				this.setState({liveCells: liveCellsCopy});
 			} else {
 				$('#' + cell).toggleClass('alive');
-				var i = this.state.liveCells.indexOf(cell);
+				let i = this.state.liveCells.indexOf(cell);
 				let liveCellsCopy = JSON.parse(JSON.stringify(this.state.liveCells));
 				liveCellsCopy.splice(i, 1);
 				this.setState({liveCells: liveCellsCopy});
@@ -149,31 +152,39 @@ var GameOfLife = React.createClass({
 
 		start: function () {
 			if (this.state.liveCells.length === 0){ return;};
+			if (this.state.initialGame === true){
+				this.setState({liveCells: liveCellsArray});
+				this.setState({initialGame: false});
+			}
 			console.log('game of life started');
-			console.log('livecells ', this.state.liveCells);
-			var self = this;
+			let self = this;
 			newLiveCells = [];
 			liveNeighbors;
 			deadNeighbors = [];
 			liveCellsArr = [];
 			liveCellsArrNew = [];
-			var i = 1;
+			let i = 1;
 			this.setState({gameIsRunning: true});
 
 			function myLoop () {
-                setTimeout(function () {    //  call a 3s setTimeout when the loop is called
+                setTimeout(function () {    
+					console.log('livecells ', self.state.liveCells);
                 	if (self.state.gameIsRunning === false){return;}
                 	let nextgen = self.state.generation + 1;
                 	self.setState({generation: nextgen});
                 	console.log('gen: ', self.state.generation);
 					self.state.liveCells.map(arrTransform);
+					console.log('liveCellsArr ', liveCellsArr);
 				    liveCellsArr.map(liveOrDie);
 					deadNeighbors.map(live);
+					console.log('newLiveCells ', newLiveCells);
 					newLiveCells.map(transformToRc);
+					console.log('liveCellsArrNew', liveCellsArrNew);
 					liveCellsArrNew.map(function(c){
-						var cellClass = $('#' + c).attr('class');
+						let cellClass = $('#' + c).attr('class');
 						if (cellClass === '') {$('#' + c).toggleClass('alive')};
 					});
+				
 					self.state.liveCells.map(function(c){
 						if (liveCellsArrNew.indexOf(c) === -1){
 							$('#' + c).removeClass('alive');
@@ -209,7 +220,7 @@ var GameOfLife = React.createClass({
 		render: function() {
 			return (
 				<div>
-					<p>{this.state.generation}</p>
+					<p>Generation: {this.state.generation}</p>
 					<Grid liveCells={this.state.liveCells} toggle={this.toggle}/>
 					<button type="button" className="btn" onClick={this.start}>Start</button>
 	             	<button type="button" className="btn" onClick={this.pause}>Pause</button>
@@ -222,3 +233,4 @@ var GameOfLife = React.createClass({
 ReactDOM.render( <GameOfLife />, document.getElementById('grid'));
 
 
+})();
