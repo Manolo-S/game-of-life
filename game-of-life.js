@@ -9,9 +9,12 @@ let rows = 20;
 let columns = 20;
 let cell;
 let liveCellsArray = [];
-for (let i = 0; i < 70; i++){
-	cell = 'r' + (1 + Math.floor(rows*(Math.random()))) + 'c' + (1 + Math.floor(columns*(Math.random())));
-	liveCellsArray.push(cell);
+
+const createFirstGenLiveCells = () => {
+    for (let i = 0; i < 70; i++){
+      cell = 'r' + (1 + Math.floor(rows*(Math.random()))) + 'c' + (1 + Math.floor(columns*(Math.random())));
+      liveCellsArray.push(cell);
+    }
 }
 
 const neighborsFunc = (c) => {
@@ -36,13 +39,13 @@ const neighborsFunc = (c) => {
 const live = (c) => {
 	liveNeighbors = 0
 	let neighbors = neighborsFunc(c);
-				
+
 	neighbors.map((neighbor) => {
 		if (_.find(liveCellsArr, neighbor) !== undefined){
 			liveNeighbors++
-		} 
+		}
 	});
-	
+
 	if (liveNeighbors === 3){
 		newLiveCells.push(c);
 	}
@@ -60,7 +63,7 @@ const liveOrDie = (c) => {
 			}
 		};
 	});
-	
+
 	if (liveNeighbors === 2 || liveNeighbors === 3){
 		newLiveCells.push(c);
 	}
@@ -92,7 +95,7 @@ let Grid = React.createClass({
 			let cells = [];
 			for (let j = 1; j < (columns + 1); j++){
 				cells.push(row + 'c' + j);
-			}			
+			}
 			return (<tr key={row}>{cells.map(createCells)}</tr>);
 		};
 
@@ -112,7 +115,7 @@ let GameOfLife = React.createClass({
 			return {
 				liveCells: liveCellsArray,
 				gameIsRunning: false,
-				generation: 1,
+				generation: '-',
 				initialGame: true
 			};
 		},
@@ -136,9 +139,10 @@ let GameOfLife = React.createClass({
 				liveCellsCopy.splice(i, 1);
 				this.setState({liveCells: liveCellsCopy});
 			}
-		},			
+		},
 
 		start: function () {
+      // if (this.state.generation === '-') {this.state.generation = 0;}
 			if (this.state.liveCells.length === 0){ return;};
 			if (this.state.initialGame === true){
 				this.setState({liveCells: liveCellsArray});
@@ -154,10 +158,10 @@ let GameOfLife = React.createClass({
 			this.setState({gameIsRunning: true});
 
 			function myLoop () {
-                setTimeout(function () {    
-                	if (self.state.gameIsRunning === false){return;}
-                	let nextgen = self.state.generation + 1;
-                	self.setState({generation: nextgen});
+        setTimeout(function () {
+        	if (self.state.gameIsRunning === false){return;}
+        	// let nextgen = self.state.generation + 1;
+        	// self.setState({generation: nextgen});
 					self.state.liveCells.map(arrTransform);
 				    liveCellsArr.map(liveOrDie);
 					deadNeighbors.map(live);
@@ -166,24 +170,27 @@ let GameOfLife = React.createClass({
 						let cellClass = $('#' + c).attr('class');
 						if (cellClass === '') {$('#' + c).toggleClass('alive')};
 					});
-				
+
 					self.state.liveCells.map(function(c){
 						if (liveCellsArrNew.indexOf(c) === -1){
 							$('#' + c).removeClass('alive');
 						}
 					});
 					self.setState({liveCells: liveCellsArrNew});
+          if (self.state.generation === '-') {self.state.generation = 0};
+          let nextgen = self.state.generation + 1;
+        	self.setState({generation: nextgen});
 					deadNeighbors = [];
 					newLiveCells = [];
 					liveCellsArrNew = [];
 					liveCellsArr = [];
-			        i++;             
-			        if (i < 1000 && self.state.gameIsRunning === true) {  
-			          myLoop();            
-			        }                      
-		   		}, 1000);
+			        i++;
+			        if (i < 1000 && self.state.gameIsRunning === true) {
+			          myLoop();
+			        }
+		   }, 1000);
 			}
-			myLoop();    
+			myLoop();
 		},
 
 		pause: function () {
@@ -193,26 +200,36 @@ let GameOfLife = React.createClass({
 		reset: function () {
 			this.setState({gameIsRunning: false});
 			this.setState({generation: 1});
-			this.setState({liveCells: []});
 			this.state.liveCells.map((c) => {
 				$('#' + c).removeClass('alive');
 			});
+			liveCellsArray = [];
+			createFirstGenLiveCells();
+			// for (let i = 0; i < 70; i++){
+			// 	cell = 'r' + (1 + Math.floor(rows*(Math.random()))) + 'c' + (1 + Math.floor(columns*(Math.random())));
+			// 	liveCellsArray.push(cell);
+			// }
+			this.setState({liveCells: liveCellsArray});
+			this.setState({generation: '-'});
 		},
 
 		render: function() {
 			return (
 				<div>
-					<p>Generation: {this.state.generation}</p>
+					<p id='generation'>Generation: {this.state.generation}</p>
 					<Grid liveCells={this.state.liveCells} toggle={this.toggle}/>
 					<div id='controls'>
-						<button type="button" className="btn" onClick={this.start}>Start</button>
-		             	<button type="button" className="btn" onClick={this.pause}>Pause</button>
-		             	<button type="button" className="btn" onClick={this.reset}>Reset</button>
+						<button type="button" className="btn btn-primary" onClick={this.start}>Start</button>
+		             	<button type="button" className="btn btn-info" onClick={this.pause}>Pause</button>
+		             	<button type="button" className="btn btn-danger" onClick={this.reset}>Reset</button>
 	             	</div>
 				</div>
 			 );
 		}
 	});
+
+
+createFirstGenLiveCells();
 
 ReactDOM.render( <GameOfLife />, document.getElementById('grid'));
 
